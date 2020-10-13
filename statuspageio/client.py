@@ -43,35 +43,38 @@ class Client(object):
         self.http_client = HttpClient(self.config)
         self.organization_id = self.config.organization_id
 
-        
         self.__pages = statuspageio.services.PageService(self.http_client, self.config.page_id)
         self.__components = statuspageio.services.ComponentsService(self.http_client, self.config.page_id)
+        self.__component_groups = statuspageio.services.ComponentGroupsService(self.http_client, self.config.page_id)
         self.__incidents = statuspageio.services.IncidentsService(self.http_client, self.config.page_id)
         self.__subscribers = statuspageio.services.SubscribersService(self.http_client, self.config.page_id)
         self.__metrics = statuspageio.services.MetricsService(self.http_client, self.config.page_id)
         self.__users = statuspageio.services.UsersService(self.http_client,self.organization_id)
 
-
     @property
     def pages(self):
         return self.__pages
-    
-    @property   
+
+    @property
     def components(self):
         return self.__components
-    
-    @property   
+
+    @property
+    def component_groups(self):
+        return self.__component_groups
+
+    @property
     def incidents(self):
         return self.__incidents
-    
+
     @property
     def subscribers(self):
         return self.__subscribers
-        
+
     @property
     def metrics(self):
         return self.__metrics
-    
+
     @property
     def users(self):
         return self.__users
