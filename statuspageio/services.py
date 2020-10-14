@@ -102,7 +102,7 @@ class ComponentsService(object):
     Normally you won't instantiate this class directly.
     """
 
-    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status']
+    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status', 'showcase']
 
     def __init__(self, http_client, page_id):
         """
@@ -133,6 +133,25 @@ class ComponentsService(object):
         _, _, components = self.http_client.get(
             '/pages/{page_id}/components.json'.format(page_id=self.page_id))
         return components
+
+    def get(self, component_id):
+        """
+        Get a component
+
+        Gets a component
+        If the specified contact does not exist, the request will return an error
+
+
+        :calls: ``get pages/{page_id}/components/{component_id}.json``
+        :param int component_id: Unique identifier of a component.
+        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :rtype: dict
+        """
+
+        _, _, component = self.http_client.get(
+            "/pages/{page_id}/components/{component_id}.json".format(
+                page_id=self.page_id, component_id=component_id))
+        return component
 
     def create(self, **kwargs):
         """
