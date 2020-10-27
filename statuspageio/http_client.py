@@ -63,7 +63,7 @@ class HttpClient(object):
         """
 
         return self.request('put', url, body=body, **kwargs)
-    
+
     def patch(self, url, body=None, **kwargs):
         """
         Send a PATCH request.
@@ -123,14 +123,13 @@ class HttpClient(object):
                                                      version=self.API_VERSION,
                                                      resource=url)
 
-        
         headers = {
-            "Content-Type": "application/x-www-form-urlencoded", 
+            "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": "OAuth " + self.config.api_key
-        }   
+        }
 
         user_headers = {}
-        if  'headers' in kwargs and isinstance(kwargs['headers'], dict):
+        if 'headers' in kwargs and isinstance(kwargs['headers'], dict):
             user_headers = kwargs['headers']
 
         headers.update(user_headers)
@@ -139,7 +138,7 @@ class HttpClient(object):
 
         if body is not None:
             headers['Content-Type'] = 'application/json'
-            payload = body if raw else self.wrap_envelope(kwargs['container'],body)
+            payload = body if raw else self.wrap_envelope(kwargs['container'], body)
             body = json.dumps(payload)
 
         resp = requests.request(method, url,
@@ -182,7 +181,7 @@ class HttpClient(object):
     @staticmethod
     def wrap_envelope(container, body):
         """ Wrap the body with the correct container to match the API """
-        return {container : body}
+        return {container: body}
 
     @staticmethod
     def unwrap_envelope(body):

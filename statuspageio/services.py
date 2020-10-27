@@ -93,6 +93,7 @@ class PageService(object):
 
         return page
 
+
 class ComponentsService(object):
     """
     :class:`statuspageio.ComponentsService` is used by :class:`statuspageio.Client` to make
@@ -101,7 +102,7 @@ class ComponentsService(object):
     Normally you won't instantiate this class directly.
     """
 
-    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status']
+    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status', 'showcase']
 
     def __init__(self, http_client, page_id):
         """
@@ -133,6 +134,24 @@ class ComponentsService(object):
             '/pages/{page_id}/components.json'.format(page_id=self.page_id))
         return components
 
+    def get(self, component_id):
+        """
+        Get a component
+
+        Gets a component
+        If the specified contact does not exist, the request will return an error
+
+
+        :calls: ``get pages/{page_id}/components/{component_id}.json``
+        :param int component_id: Unique identifier of a component.
+        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :rtype: dict
+        """
+
+        _, _, component = self.http_client.get(
+            "/pages/{page_id}/components/{component_id}.json".format(
+                page_id=self.page_id, component_id=component_id))
+        return component
 
     def create(self, **kwargs):
         """
@@ -147,7 +166,6 @@ class ComponentsService(object):
         :return: Dictionary that support attriubte-style access and represents updated Component resource.
         :rtype: dict
         """
-
 
         if not kwargs:
             raise Exception('attributes are missing')
@@ -180,7 +198,6 @@ class ComponentsService(object):
                 page_id=self.page_id, component_id=component_id))
         return status_code
 
-
     def update(self, component_id, **kwargs):
         """
         Update a component
@@ -207,6 +224,121 @@ class ComponentsService(object):
                 page_id=self.page_id, component_id=component_id), container='component', body=attributes)
         return component
 
+
+class ComponentGroupsService(object):
+    """
+    :class:`statuspageio.ComponentGroupsService` is used by :class:`statuspageio.Client` to make
+    actions related to Component Groups resource.
+
+    Normally you won't instantiate this class directly.
+    """
+
+    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'components']
+
+    def __init__(self, http_client, page_id):
+        """
+        :param :class:`statuspageio.HttpClient` http_client: Pre configured high-level http client.
+        """
+
+        self.__http_client = http_client
+        self.page_id = page_id
+        self.container = 'component_group'
+
+    @property
+    def http_client(self):
+        return self.__http_client
+
+    def list(self):
+        """
+        List component groups
+
+        Lists component groups and their information
+        If the specified contact does not exist, the request will return an error
+
+
+        :calls: ``get pages/{page_id}/component-groups.json``
+        :return: Dictionary that support attriubte-style access and represents updated Component Groups resource.
+        :rtype: dict
+        """
+
+        _, _, component_groups = self.http_client.get(
+            '/pages/{page_id}/component-groups.json'.format(page_id=self.page_id))
+        return component_groups
+
+
+    def create(self, **kwargs):
+        """
+        Create a component group
+
+        Creates component group
+        If the specified contact does not exist, the request will return an error
+
+
+        :calls: ``post pages/{page_id}/component-groups.json``
+        :param dict **kwargs:  component attributes to update.
+        :return: Dictionary that support attriubte-style access and represents updated Component Group resource.
+        :rtype: dict
+        """
+
+
+        if not kwargs:
+            raise Exception('attributes are missing')
+
+        attributes = dict((k, v) for k, v in kwargs.iteritems()
+                          if k in self.OPTS_KEYS_TO_PERSIST)
+
+        _, _, component_group = self.http_client.post(
+            '/pages/{page_id}/component-groups.json'.format(
+                page_id=self.page_id), container=self.container, body=attributes)
+
+        return component_group
+
+    def delete(self, id):
+        """
+        Delete a component group
+
+        Deletes a component group
+        If the specified contact does not exist, the request will return an error
+
+
+        :calls: ``delete pages/{page_id}/component-groups/{id}.json``
+        :param int id: Unique identifier of a component groupt.
+        :return: Dictionary that support attriubte-style access and represents updated Component Group resource.
+        :rtype: dict
+        """
+
+        status_code, _, _ = self.http_client.delete(
+            "/pages/{page_id}/components/{id}.json".format(
+                page_id=self.page_id, id=id))
+        return status_code
+
+    def update(self, id, **kwargs):
+        """
+        Update a component group
+
+        Updates component group information
+        If the specified contact does not exist, the request will return an error
+
+
+        :calls: ``patch pages/{page_id}/component-groups/{id}.json``
+        :param int id: Unique identifier of a component group.
+        :param dict **kwargs:  component_group attributes to update.
+        :return: Dictionary that support attriubte-style access and represents updated Component Group resource.
+        :rtype: dict
+        """
+
+        if not kwargs:
+            raise Exception('attributes for Contact are missing')
+
+        attributes = dict((k, v) for k, v in kwargs.iteritems()
+                          if k in self.OPTS_KEYS_TO_PERSIST)
+
+        _, _, component_group = self.http_client.patch(
+            "/pages/{page_id}/component-groups/{id}.json".format(
+                page_id=self.page_id, id=id), container=self.container, body=attributes)
+        return component_group
+
+
 class IncidentsService(object):
     """
     :class:`statuspageio.IncidentsService` is used by :class:`statuspageio.Client` to make
@@ -230,7 +362,7 @@ class IncidentsService(object):
     def http_client(self):
         return self.__http_client
 
-    def list(self):      
+    def list(self):
         """
         List all incidents
 
